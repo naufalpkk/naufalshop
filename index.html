@@ -1,0 +1,111 @@
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Al-Fadhl</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
+        header { background: #016a67; color: white; padding: 1rem; text-align: center; }
+        nav { background: #444; padding: 10px; text-align: center; }
+        nav a { color: white; margin: 0 15px; text-decoration: none; font-size: 16px; }
+        .container { display: flex; flex-wrap: wrap; justify-content: center; padding: 20px; }
+        .card { background: white; margin: 10px; padding: 15px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); width: 250px; text-align: center; }
+        .card img { width: 100%; border-radius: 10px; }
+        .card button { background: #28a745; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; }
+        .order-list { text-align: center; background: white; padding: 20px; border-radius: 10px; margin: 20px; }
+    </style>
+    <script>
+        let pesanan = [];
+        
+        function pesanJaket(namaJaket) {
+            pesanan.push(namaJaket);
+            alert('Anda telah memesan: ' + namaJaket);
+            tampilkanPesanan();
+        }
+
+        function tampilkanPesanan() {
+            let daftarPesanan = document.getElementById("daftarPesanan");
+            daftarPesanan.innerHTML = "";
+            pesanan.forEach((item, index) => {
+                let li = document.createElement("li");
+                li.textContent = (index + 1) + ". " + item;
+                daftarPesanan.appendChild(li);
+            });
+            perbaruiTautanBagikan();
+        }
+
+        function perbaruiTautanBagikan() {
+            let url = new URL(window.location.href);
+            url.searchParams.set("pesanan", encodeURIComponent(JSON.stringify(pesanan)));
+            document.getElementById("tautanBagikan").value = url.href;
+        }
+
+        function salinTautan() {
+            let input = document.getElementById("tautanBagikan");
+            input.select();
+            document.execCommand("copy");
+            alert("Tautan disalin!");
+        }
+
+        function kirimPesananWhatsApp() {
+            let nomorWA = "6285888576404"; // Ganti dengan nomor WhatsApp tujuan
+            let pesan = "Pesanan saya: %0A" + pesanan.map((item, index) => (index + 1) + ". " + item).join("%0A");
+            let url = "https://wa.me/" + nomorWA + "?text=" + pesan;
+            window.open(url, "_blank");
+        }
+
+        function muatPesananDariURL() {
+            let params = new URLSearchParams(window.location.search);
+            if (params.has("pesanan")) {
+                try {
+                    pesanan = JSON.parse(decodeURIComponent(params.get("pesanan")));
+                    tampilkanPesanan();
+                } catch (e) {
+                    console.error("Gagal memuat pesanan dari URL");
+                }
+            }
+        }
+
+        window.onload = muatPesananDariURL;
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Fashion Jaket Gunung</h1>
+    </header>
+    <nav>
+        <a href="#">Beranda</a>
+        <a href="#pesanan">Cek Pesanan</a>
+        <a href="#whatsapp" onclick="kirimPesananWhatsApp()">Hubungi WhatsApp</a>
+    </nav>
+    <div class="container">
+        <div class="card">
+            <img src="css/jaket gunung.jpg" alt="Jaket Gunung 1">
+            <h3>Jaket Gunung cold weather</h3>
+            <button onclick="pesanJaket('Jaket Gunung Tahan Air')">Beli Sekarang</button>
+        </div>
+        <div class="card">
+            <img src="css/jaket parasut.jpg" alt="Jaket Gunung 2">
+            <h3>Jaket Gunung Windproof</h3>
+            <button onclick="pesanJaket('Jaket Gunung Windproof')">Beli Sekarang</button>
+        </div>
+        <div class="card">
+            <img src="css/Jaket tnf.jpg" alt="Jaket Gunung 3">
+            <h3>Jaket Gunung Fleece</h3>
+            <button onclick="pesanJaket('Jaket Gunung Fleece')">Beli Sekarang</button>
+        </div>
+        <div class="card">
+            <img src="css/JAKET POLHAM BLACK JAKET MUSIM DINGIN WINTER JAKET OUTDOOR OBD PH02.jpeg" alt="Jaket Gunung 4">
+            <h3>Jaket Gunung Softshell</h3>
+            <button onclick="pesanJaket('Jaket Gunung Softshell')">Beli Sekarang</button>
+        </div>
+    </div>
+    <div id="pesanan" class="order-list">
+        <h2>Daftar Pesanan</h2>
+        <ul id="daftarPesanan"></ul>
+        <input type="text" id="tautanBagikan" readonly style="width: 80%; padding: 5px;">
+        <button onclick="salinTautan()">Salin Tautan</button>
+        <button onclick="kirimPesananWhatsApp()">Kirim Pesanan ke WhatsApp</button>
+    </div>
+</body>
+</html>
